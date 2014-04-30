@@ -14,15 +14,25 @@ var drawBarChart = function(w,h) {
 			height: h
 		});
 	
-	d3.csv("source.csv",function(error, csv){
-		if(csv){
+	d3.json("source.json",function(error, json) {
+		if(json){
 			
-		}
+				// each country gets its own rect
+				
+				var rect = d3.selectAll("rect")
+					.data(json["Source"])
+					.enter()
+					.append("rect");
+			
+			
+			}
+		
 		else{
 			console.warn(error);
 		}
 	});
 };
+
 drawBarChart(w,h);
 
 /*
