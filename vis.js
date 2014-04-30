@@ -26,11 +26,13 @@ var drawBarChart = function(w,h) {
 					json[year][prop] = parseInt(json[year][prop]);
 				}	
 				
+				var bar = [1,2,3,4,5,6,7,7];
+				
 				
 									
 				// find the minimum and maximum value of a year
-				var min = d3.min(json[year]); console.log(min);
-				var max = d3.max(json[year]); console.log(max);
+				var min = d3.min(json[year]); console.log(json[year]);
+				
 				
 				// each country gets its own rect
 				var rect = d3.selectAll("rect")
