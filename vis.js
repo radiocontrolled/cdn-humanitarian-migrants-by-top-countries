@@ -17,13 +17,31 @@ var drawBarChart = function(w,h) {
 	d3.json("source.json",function(error, json) {
 		if(json){
 			
-				// each country gets its own rect
+			
+			
+			var drawRects = function(year){
 				
+				// convert strings to numbers
+				for (var prop in json[year]){
+					json[year][prop] = parseInt(json[year][prop]);
+				}	
+				
+				
+									
+				// find the minimum and maximum value of a year
+				var min = d3.min(json[year]); console.log(min);
+				var max = d3.max(json[year]); console.log(max);
+				
+				// each country gets its own rect
 				var rect = d3.selectAll("rect")
 					.data(json["Source"])
 					.enter()
 					.append("rect");
+				
+			}
+			drawRects(2003);
 			
+				
 			
 			}
 		
