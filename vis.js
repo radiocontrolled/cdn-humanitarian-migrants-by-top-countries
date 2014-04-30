@@ -1,5 +1,6 @@
-var w = window.innerWidth/5;
+var w = window.innerWidth/1.1;
 var h = window.innerHeight/1.5;
+var scale;
 
 d3.select("section").append("svg");
 
@@ -8,7 +9,7 @@ d3.select("section").append("svg");
  */
 var drawBarChart = function(w,h) {
 	
-	d3.select("svg")
+	var svg = d3.select("svg")
 		.attr({
 			width: w,
 			height: h
@@ -17,33 +18,43 @@ var drawBarChart = function(w,h) {
 	d3.json("source.json",function(error, json) {
 		if(json){
 			
-			
-			
 			var drawRects = function(year){
-				
-				// convert strings to numbers
-				for (var prop in json[year]){
-					json[year][prop] = parseInt(json[year][prop]);
-				}	
-				
-				var bar = [1,2,3,4,5,6,7,7];
+													
+				// find the minimum and maximum value (amount of humanitarian persons) of a year
+				var min = d3.min(json[year]); 
+				var max = d3.max(json[year]); 
 				
 				
-									
-				// find the minimum and maximum value of a year
-				var min = d3.min(json[year]); console.log(json[year]);
-				
+				/* Scale for bars
+				*  input domain is the min and max of persons for a given year from the JSON
+				*  output range extend is the height of the svg
+				*/
+				scale = d3.scale.linear().domain([min,max]).range([0,h]);
 				
 				// each country gets its own rect
-				var rect = d3.selectAll("rect")
-					.data(json["Source"])
+				svg.selectAll("rect")
+					.data(json[year])
 					.enter()
-					.append("rect");
+					.append("rect")
+					.attr({
+						height: function(d){
+							return d;
+						},
+						width: function(){
+							return w/24;
+						},
+						x: function(d,i){
+							return i;
+						},
+						y: function (){
+							return 100;
+						},
+						fill: "#75DCCD"
+					});
 				
-			}
+			};
 			drawRects(2003);
-			
-				
+
 			
 			}
 		
