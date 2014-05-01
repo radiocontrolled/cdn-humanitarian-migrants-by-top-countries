@@ -1,8 +1,7 @@
-var w = window.innerWidth;
-var h = window.innerHeight;
-var barWidth = w/24;
-var barHeight = 10;
-var scale;
+var w = window.innerWidth/1.1;
+var h = window.innerHeight/1.1;
+var barHeight = 0; // set a minimum barHeight 
+var scale, barWidth;
 
 d3.select("section").append("svg");
 
@@ -13,8 +12,11 @@ var drawBarChart = function(w,h) {
 
 	d3.json("source.json",function(error, json) {
 		if(json){
-						
+					
 			var drawRects = function(year){
+				
+				barWidth = w/json[year].length;
+				
 				
 				/* calculate height of SVG based on size 
 				 * of the dataset
@@ -31,14 +33,16 @@ var drawBarChart = function(w,h) {
 				*/
 				
 				scale = d3.scale.linear()
-					.domain([d3.min(json[year]),d3.max(json[year])])
-					.range([ barHeight,h/2]);
+					.domain([0, d3.max(json[year], function(d) { return d; })])
+					.range([ h/1.1,20]);
 				
+				
+			
 				// create a g element for every country 
 				var bars = svg.selectAll("g")
 					.data(json[year])
 					.enter()
-					.append("g")
+					.append("g");
 					
 				/* 
 				 * create the spacing between each g 
@@ -52,12 +56,13 @@ var drawBarChart = function(w,h) {
 				// within each g element, nest a rectangle
 				bars.append("rect")
 					.attr({
-						"height":  scale,
-						"width": barWidth,
-						"y": function(h, scale){
-							return 100;
-						}
+						"height": function(d) { 
+							return h - scale(d); 
+						},
+						"width": barWidth
 					})
+	 				.attr("y", function(d) { return scale(d); })
+      				
 					.style("fill","#75DCCD");
 					
 				bars.on("mouseover", function(){
