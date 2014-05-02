@@ -24,7 +24,7 @@ var drawBarChart = function(w,h) {
 				var svg = d3.select("svg")
 					.attr({
 						width: w,
-						height: h/1.1
+						height: h
 					})
 					.attr("transform", "translate(21,0)"); // make responsive
 																	
@@ -34,11 +34,10 @@ var drawBarChart = function(w,h) {
 				*  output range extend is the height of the svg
 				*/
 				
-				scale = d3.scale.linear()
+				scaleY = d3.scale.linear()
 					.domain([0, d3.max(json[year], function(d) { return d; })])
-					.range([ h,20]);
-				
-				
+					.range([ h,0]);
+					
 			
 				// create a g element for every country 
 				var bars = svg.selectAll("g")
@@ -60,14 +59,19 @@ var drawBarChart = function(w,h) {
 				bars.append("rect")
 					.attr({
 						"height": function(d) { 
-							return h - scale(d); 
+							return h - scaleY(d); 
 						},
 						"width": barWidth,
 						"y":function(d) { 
-							return scale(d); 
+							return scaleY(d); 
 						}
 					})
 					.style("fill","#75DCCD");
+					
+				/* 
+				 *  On hover, change the color of the 
+				 *  bar
+				 */
 					
 				bars.on("mouseover", function(){
 					d3.select(this.firstChild).style("fill","#4DC2CA");
@@ -84,17 +88,17 @@ var drawBarChart = function(w,h) {
 					})
 					.attr({
 						"y": function(d){
-							return scale(d);
+							return scaleY(d);
 						},
 						"x": function(d,i){
-							return barWidth*.25;
+							return barWidth*0.25;
 						}
 					});
 			
 
-			/* 
-			 * Create a y axis for the bar chart 
-			 */
+				/* 
+				 * Create a y axis for the bar chart 
+				 */
 				d3.select("section svg")
 					.append("g").classed("bulbLabels",true)
 					.attr("transform", "translate(-5,0)")
@@ -102,11 +106,12 @@ var drawBarChart = function(w,h) {
 						"fill":"none",
 						"stroke":"#308CB4"
 					})
-					.call(d3.svg.axis().scale(scale).orient("left").ticks(10).tickPadding([1]))
-
-			/*
-			 * give the y axis a title
-			 */
+					.call(d3.svg.axis().scale(scaleY).orient("left").ticks(10).tickPadding([1]))
+	
+					/*
+					*  Give the y axis a title
+					*/
+					
 					.append("text")
 					.attr({
 						"transform":"rotate(-90)",
@@ -116,6 +121,7 @@ var drawBarChart = function(w,h) {
 						"text-anchor":"start"
 					})
 					.text("Total entries of humanitarian population by top source countries");
+						
 				
 				d3.selectAll("text").style({
 					"fill": "#308CB4",
@@ -123,7 +129,38 @@ var drawBarChart = function(w,h) {
 					"font-size": ".5em"
 				});
 			};
-			drawRects(2003);	
+			
+			drawRects(2003);
+			
+			var drawNavigation = function () {
+			
+				var navigationYears = [];
+				
+				for(var prop in json){
+					
+					if (prop != "Source"){
+						navigationYears.push(prop);	
+					}
+				}
+
+				var ul = d3.select(".navigation")
+					.selectAll("li")
+					.data(navigationYears)
+					.enter()
+					.append("li")
+					.attr("class", function(d,i){
+						return i;
+					})
+					.append("text")
+					.text(function(d){
+						return d;
+					});
+					
+					
+			};
+			
+			drawNavigation();
+				
 			}
 		
 		else{
