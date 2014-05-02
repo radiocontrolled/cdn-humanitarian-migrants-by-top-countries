@@ -1,13 +1,10 @@
 var w = window.innerWidth/1.1;
 var h = window.innerHeight/1.1;
 var barHeight = 0; // set a minimum barHeight 
-var scale, barWidth, year;
+var scale, barWidth, year, bars, svg;
 
 d3.select("section").append("svg");
 
-/*
- *  Draw the bar chart
- */
 var drawBarChart = function(w,h) {
 
 	d3.json("source.json",function(error, json) {
@@ -16,17 +13,14 @@ var drawBarChart = function(w,h) {
 			var drawRects = function(year){
 				
 				barWidth = w/json[year].length -1;
-				
-				
-				/* calculate height of SVG based on size 
-				 * of the dataset
-				 */
-				var svg = d3.select("svg")
+
+				svg = d3.select("svg")
 					.attr({
 						width: w,
 						height: h
 					})
 					.attr("transform", "translate(21,0)"); // make responsive
+				
 																	
 				/* Scale which will be used to create 
 				 * bar height, and the vertical axis
@@ -39,23 +33,22 @@ var drawBarChart = function(w,h) {
 					.range([ h,0]);
 					
 			
-				// create a g element for every country 
-				var bars = svg.selectAll("g")
-					.data(json[year])
-					.enter()
+				
+				bars  = svg.selectAll("g")
+					.data(json[year], function(d){return d;});
+					
+				bars.enter()
 					.append("g")
 					.classed("bar",true);
-					
-				/* 
-				 * create the spacing between each g 
-				 * elements which will hold the bars and their text
-				 * via CSS transform
-				 */	
+				
+			
+			
+				// Create the spacing between each g 
 				bars.attr("transform", function(d,i) { 
 						return "translate(" + (i*barWidth) + ",0)";
 					});
 
-				// within each g element, nest a rectangle
+				// Nest a rect within each g 
 				bars.append("rect")
 					.attr({
 						"height": function(d) { 
@@ -68,19 +61,7 @@ var drawBarChart = function(w,h) {
 					})
 					.style("fill","#75DCCD");
 					
-				/* 
-				 *  On hover, change the color of the 
-				 *  bar
-				 */
-					
-				bars.on("mouseover", function(){
-					d3.select(this.firstChild).style("fill","#4DC2CA");
-				});
-				bars.on("mouseout", function(){
-					d3.select(this.firstChild).style("fill","#75DCCD");
-				});
-				
-				
+				// Nest text within each g
 				bars.append("text")
 					.classed("total",true)
 					.text(function(d) { 
@@ -93,14 +74,24 @@ var drawBarChart = function(w,h) {
 						"x": function(d,i){
 							return barWidth*0.25;
 						}
+					})
+					.style({
+						"fill": "#308CB4",
+						"stroke": "none",
+						"font-size": ".5em"
 					});
-			
-
-				/* 
-				 * Create a y axis for the bar chart 
-				 */
+					
+				// On hover, change rect colour
+				bars.on("mouseover", function(){
+					d3.select(this.firstChild).style("fill","#4DC2CA");
+				});
+				bars.on("mouseout", function(){
+					d3.select(this.firstChild).style("fill","#75DCCD");
+				});
+				
+				// Create a y axis for the bar chart 
 				d3.select("section svg")
-					.append("g").classed("bulbLabels",true)
+					.append("g")
 					.attr("transform", "translate(-5,0)")
 					.style({
 						"fill":"none",
@@ -108,22 +99,23 @@ var drawBarChart = function(w,h) {
 					})
 					.call(d3.svg.axis().scale(scaleY).orient("left").ticks(10).tickPadding([1]))
 	
-					/*
-					*  Give the y axis a title
-					*/
-					
+					// Give the y axis a title
 					.append("text")
 					.attr({
 						"transform":"rotate(-90)",
 						"x": -h,
 						"y": ".6em",
 						"dy": ".30em",
-						"text-anchor":"start"
+						"text-anchor":"start",
+					})
+					.style({
+						"stroke": "none",
+						"fill": "#308CB4",
+						"font-size": ".5em"
 					})
 					.text("Total entries of humanitarian population by top source countries");
 						
-				
-				d3.selectAll("text").style({
+				d3.selectAll(".tick").style({
 					"fill": "#308CB4",
 					"stroke": "none",
 					"font-size": ".5em"
@@ -137,7 +129,6 @@ var drawBarChart = function(w,h) {
 				var navigationYears = [];
 				
 				for(var prop in json){
-					
 					if (prop != "Source"){
 						navigationYears.push(prop);	
 					}
@@ -151,15 +142,10 @@ var drawBarChart = function(w,h) {
 					.append("text")
 					.text(function(d){
 						return d;
-					});
-					
+					});	
 			}();
 			
-			
-			/* 
-			 *  User controls year displayed
-			 */
-			
+			// getYear gives user control of data displayed
 			var getYear = function (){	
 				var years = document.querySelectorAll("li text");
 				for (i = 0; i < years.length; i++){
@@ -178,8 +164,6 @@ var drawBarChart = function(w,h) {
 			console.warn(error);
 		}
 	});
-
-
 };
 
 drawBarChart(w,h);
@@ -196,6 +180,8 @@ var resize = function() {
 	h = window.innerHeight/1.1;
 	
 	drawBarChart(w,h);
+	
+	bars = svg.selectAll("g").remove();
 	
 };
 
