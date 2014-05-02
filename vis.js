@@ -15,7 +15,7 @@ var drawBarChart = function(w,h) {
 					
 			var drawRects = function(year){
 				
-				barWidth = w/json[year].length;
+				barWidth = w/json[year].length -1;
 				
 				
 				/* calculate height of SVG based on size 
@@ -24,17 +24,19 @@ var drawBarChart = function(w,h) {
 				var svg = d3.select("svg")
 					.attr({
 						width: w,
-						height: h
-					});
+						height: h/1.1
+					})
+					.attr("transform", "translate(21,0)"); // make responsive
 																	
-				/* Scale for bars
+				/* Scale which will be used to create 
+				 * bar height, and the vertical axis
 				*  input domain is the min and max of persons for a given year from the JSON
 				*  output range extend is the height of the svg
 				*/
 				
 				scale = d3.scale.linear()
 					.domain([0, d3.max(json[year], function(d) { return d; })])
-					.range([ h/1.1,20]);
+					.range([ h,20]);
 				
 				
 			
@@ -42,7 +44,8 @@ var drawBarChart = function(w,h) {
 				var bars = svg.selectAll("g")
 					.data(json[year])
 					.enter()
-					.append("g");
+					.append("g")
+					.classed("bar",true);
 					
 				/* 
 				 * create the spacing between each g 
@@ -59,10 +62,11 @@ var drawBarChart = function(w,h) {
 						"height": function(d) { 
 							return h - scale(d); 
 						},
-						"width": barWidth
+						"width": barWidth,
+						"y":function(d) { 
+							return scale(d); 
+						}
 					})
-	 				.attr("y", function(d) { return scale(d); })
-      				
 					.style("fill","#75DCCD");
 					
 				bars.on("mouseover", function(){
@@ -72,10 +76,52 @@ var drawBarChart = function(w,h) {
 					d3.select(this.firstChild).style("fill","#75DCCD");
 				});
 				
+				
 				bars.append("text")
-					.text(function(d) { return d; });	
+					.classed("total",true)
+					.text(function(d) { 
+						return d; 
+					})
+					.attr({
+						"y": function(d){
+							return scale(d);
+						},
+						"x": function(d,i){
+							return barWidth*.25;
+						}
+					});
+			
 
-		
+			/* 
+			 * Create a y axis for the bar chart 
+			 */
+				d3.select("section svg")
+					.append("g").classed("bulbLabels",true)
+					.attr("transform", "translate(-5,0)")
+					.style({
+						"fill":"none",
+						"stroke":"#308CB4"
+					})
+					.call(d3.svg.axis().scale(scale).orient("left").ticks(10).tickPadding([1]))
+
+			/*
+			 * give the y axis a title
+			 */
+					.append("text")
+					.attr({
+						"transform":"rotate(-90)",
+						"x": -h,
+						"y": ".6em",
+						"dy": ".30em",
+						"text-anchor":"start"
+					})
+					.text("Total entries of humanitarian population by top source countries");
+				
+				d3.selectAll("text").style({
+					"fill": "#308CB4",
+					"stroke": "none",
+					"font-size": ".5em"
+				});
 			};
 			drawRects(2003);	
 			}
