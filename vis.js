@@ -1,7 +1,7 @@
 var w = window.innerWidth/1.1;
 var h = window.innerHeight/1.1;
 var barHeight = 0; // set a minimum barHeight 
-var scale, barWidth;
+var scale, barWidth, year;
 
 d3.select("section").append("svg");
 
@@ -148,40 +148,59 @@ var drawBarChart = function(w,h) {
 					.data(navigationYears)
 					.enter()
 					.append("li")
-					.attr("class", function(d,i){
-						return i;
-					})
 					.append("text")
 					.text(function(d){
 						return d;
 					});
 					
-					
-			};
+			}();
 			
-			drawNavigation();
-				
+			
+			/* 
+			 *  User controls year displayed
+			 */
+			
+			var getYear = function (){	
+				var years = document.querySelectorAll("li text");
+				for (i = 0; i < years.length; i++){
+					years[i].addEventListener("click", trigger);
+				}
+				function trigger(){
+					var year = this.innerHTML;
+					drawRects(year);
+				}
+									
+			}();
+						
 			}
 		
 		else{
 			console.warn(error);
 		}
 	});
+
+
 };
 
 drawBarChart(w,h);
+
+
 
 /*
  *  Resize the barchart on viewport size change
  */
 
-function resize() {
-	w = window.innerWidth;
-	h = window.innerHeight/1.5;
+var resize = function() {
+	
+	w = window.innerWidth/1.1;
+	h = window.innerHeight/1.1;
 	
 	drawBarChart(w,h);
-}
+	
+};
 
 d3.select(window).on('resize', resize); 
+
+
 
 
