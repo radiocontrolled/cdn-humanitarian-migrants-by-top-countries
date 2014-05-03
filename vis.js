@@ -78,15 +78,18 @@ var drawBarChart = function(w,h) {
 					.attr({
 						"y": function(d){
 							return scaleY(d) - 1;
-					},
+						},
 						"x": function(d,i){
-							return barWidth*0.3;
-					}
+							return barWidth * 0.5;
+						},
+						"text-anchor": "middle",
+						"alignment-baseline": "middle"
 					})
 					.style({
 						"fill": "#333333",
 						"stroke": "none",
 						"font-size": "0.5em",
+						"font-weight": "bold",
 						"display":"none"
 					});
 				
@@ -112,7 +115,7 @@ var drawBarChart = function(w,h) {
 						"fill":"none",
 						"stroke":"#333333"
 					})
-					.call(d3.svg.axis().scale(scaleY).orient("left").ticks(10).tickPadding([1]))
+					.call(d3.svg.axis().scale(scaleY).orient("left").ticks(10).tickSize([5]))
 	
 					// Give the y axis a title
 					.append("text")
@@ -120,20 +123,22 @@ var drawBarChart = function(w,h) {
 						"transform":"rotate(-90)",
 						"x": -h,
 						"y": ".6em",
-						"dy": ".30em",
+						"dy": "-5em",
 						"text-anchor":"start",
 					})
 					.style({
 						"stroke": "none",
 						"fill": "#333333",
-						"font-size": ".5em"
+						"font-size": ".5em",
+						"font-weight": "bold"
 					})
 					.text("Total entries of humanitarian population by top source countries");
 						
 				d3.selectAll(".tick").style({
 					"fill": "#333333",
 					"stroke": "none",
-					"font-size": ".5em"
+					"font-size": ".5em",
+					"font-weight": "bold"
 				});
 			};
 			
@@ -167,7 +172,7 @@ var drawBarChart = function(w,h) {
 					years[i].addEventListener("click", trigger);
 				}
 				function trigger(){
-					var year = this.innerHTML;
+					year = this.innerHTML;
 					drawRects(year);
 				}
 									

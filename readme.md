@@ -7,4 +7,5 @@ This visualisation looks at the number humanitarian migrants who come to Canada 
 - Make it so bars transition between years
 - Make bars sortable
 
-- Choosing HTML tooltips because some values are zero. 
+# Background 
+- Explain tooltips rationale
