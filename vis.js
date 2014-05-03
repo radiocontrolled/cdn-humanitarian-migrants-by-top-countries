@@ -1,6 +1,6 @@
 var w = window.innerWidth/1.1;
 var h = window.innerHeight/1.5;
-var barWidth, year, bars, svg, scaleX, scaleY;
+var barWidth, year, bars, svg, scaleX, scaleY, xAxisLabelTransform;
 
 var opts = {
 	"stroke": "none",
@@ -25,10 +25,10 @@ var drawBarChart = function(w,h) {
 				svg = d3.select("svg")
 					.attr({
 						width: w,
-						height: window.innerHeight
+						height: window.innerHeight/1.1
 					});				
 																	
-				// Scale for y axis. Input range is # of persons, output range = height of svg)			
+				// Scale for y axis. Input range is # of persons, output range is height of svg)			
 				scaleY = d3.scale.linear()
 					.domain([0, d3.max(json[year], function(d) { return d; })])
 					.range([ h,0]);
@@ -36,7 +36,7 @@ var drawBarChart = function(w,h) {
 				// Ordinal scale for x axis
 				scaleX = d3.scale.ordinal()
 					.domain(json.Source.map(function(d) { return d; }))
-					.rangeRoundBands([0, w*0.95]);
+					.rangeRoundBands([0, w*0.95],0,0);
 				
 				bars  = svg.append("g").classed("chart",true).attr("transform","translate(50,0)")
 					.selectAll("g")
@@ -115,7 +115,7 @@ var drawBarChart = function(w,h) {
 						"fill":"none",
 						"stroke":"#333333"
 					})
-					.call(d3.svg.axis().scale(scaleY).orient("left").ticks(10).tickSize([5]))
+					.call(d3.svg.axis().scale(scaleY).orient("left").ticks(10).tickSize([2]))
 	
 					// Give the y axis a title
 					.append("text")
@@ -140,9 +140,20 @@ var drawBarChart = function(w,h) {
 					.attr("transform", "translate(0," + h + ")")
 					.call(xAxis)
 					.append("text");
+					
+				// Depending on viewport size, rotate x asis labels for usability
+				positionLabels = function () {
+					if (document.body.clientWidth < 600) {
+						xAxisLabelTransform = "rotate(90) translate(5,-50)";
+					}
+					else {
+						xAxisLabelTransform = "rotate(70) translate(15,-40)";
+					}	
+						return xAxisLabelTransform;
+					}();
 										
 				d3.selectAll(".xAxis text")
-					.attr("transform","rotate(70) translate(15,-40)")
+					.attr("transform",xAxisLabelTransform)
 					.style("text-anchor","start");
 					
 				d3.selectAll(".tick").style(opts);
