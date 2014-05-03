@@ -20,15 +20,13 @@ var drawBarChart = function(w,h) {
 					
 			var drawRects = function(year){
 				
-				barWidth = w/json[year].length -1;
+				barWidth = (w/json[year].length -1)*0.95;
 
 				svg = d3.select("svg")
 					.attr({
 						width: w,
 						height: window.innerHeight
-					})
-					//.attr("transform", "translate(35,0)"); // make responsive
-				
+					});				
 																	
 				// Scale for y axis. Input range is # of persons, output range = height of svg)			
 				scaleY = d3.scale.linear()
@@ -38,9 +36,10 @@ var drawBarChart = function(w,h) {
 				// Ordinal scale for x axis
 				scaleX = d3.scale.ordinal()
 					.domain(json.Source.map(function(d) { return d; }))
-					.rangeRoundBands([0, w]);
+					.rangeRoundBands([0, w*0.95]);
 				
-				bars  = svg.selectAll("g")
+				bars  = svg.append("g").classed("chart",true).attr("transform","translate(50,0)")
+					.selectAll("g")
 					.data(json[year], function(d){return d;});
 					
 				bars.enter()
@@ -110,7 +109,7 @@ var drawBarChart = function(w,h) {
 				d3.select("section svg")
 					.append("g")
 					.classed("yAxis",true)
-					.attr("transform", "translate(-5,0)")
+					.attr("transform", "translate(45,0)")
 					.style({
 						"stroke-width": ".1em",
 						"fill":"none",
@@ -131,7 +130,6 @@ var drawBarChart = function(w,h) {
 					.text("Total entries of humanitarian population by top source countries");
 					
 				// Create an x axis for the bar chart 
-				
 				var xAxis = d3.svg.axis()
 					.scale(scaleX)
 					.orient("bottom");
@@ -144,7 +142,7 @@ var drawBarChart = function(w,h) {
 					.append("text");
 										
 				d3.selectAll(".xAxis text")
-					.attr("transform","rotate(65) translate(1,5)")
+					.attr("transform","rotate(70) translate(15,-40)")
 					.style("text-anchor","start");
 					
 				d3.selectAll(".tick").style(opts);
@@ -200,8 +198,6 @@ drawBarChart(w,h);
 var resize = function() {
 	
 	w = window.innerWidth/1.1;
-	h = window.innerHeight/1.5;
-	
 	drawBarChart(w,h);
 	
 	bars = svg.selectAll("g").remove();
