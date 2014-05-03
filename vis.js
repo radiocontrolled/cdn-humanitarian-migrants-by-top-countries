@@ -41,15 +41,13 @@ var drawBarChart = function(w,h) {
 					.append("g")
 					.classed("bar",true);
 				
-			
-			
 				// Create the spacing between each g 
 				bars.attr("transform", function(d,i) { 
 						return "translate(" + (i*barWidth) + ",0)";
 					});
 
 				// Nest a rect within each g 
-				bars.append("rect")
+				bars.append("rect")						
 					.attr({
 						"height": function(d) { 
 							return h - scaleY(d); 
@@ -59,34 +57,51 @@ var drawBarChart = function(w,h) {
 							return scaleY(d); 
 						}
 					})
-					.style("fill","#75DCCD");
+					.style({
+						"fill":"#75DCCD",
+						"stroke-width": .5, 
+						"stroke": "#fff"	
+					});
+				
+				bars.transition()
+					.attr({
+						"height":"100"
+					})
+					.duration(4000);
 					
 				// Nest text within each g
 				bars.append("text")
 					.classed("total",true)
-					.text(function(d) { 
-						return d; 
+					.text(function(d) {
+						return d;
 					})
 					.attr({
 						"y": function(d){
-							return scaleY(d);
-						},
+							return scaleY(d) - 1;
+					},
 						"x": function(d,i){
-							return barWidth*0.25;
-						}
+							return barWidth*0.3;
+					}
 					})
 					.style({
-						"fill": "#308CB4",
+						"fill": "#333333",
 						"stroke": "none",
-						"font-size": ".5em"
+						"font-size": "0.5em",
+						"display":"none"
 					});
-					
-				// On hover, change rect colour
+				
+				
+				// On hover, change rect colour and display tooltip
 				bars.on("mouseover", function(){
+						
 					d3.select(this.firstChild).style("fill","#4DC2CA");
+					d3.select(this.lastChild).style("display","inline");
+					
 				});
+				
 				bars.on("mouseout", function(){
 					d3.select(this.firstChild).style("fill","#75DCCD");
+					d3.select(this.lastChild).style("display","none");
 				});
 				
 				// Create a y axis for the bar chart 
@@ -95,7 +110,7 @@ var drawBarChart = function(w,h) {
 					.attr("transform", "translate(-5,0)")
 					.style({
 						"fill":"none",
-						"stroke":"#308CB4"
+						"stroke":"#333333"
 					})
 					.call(d3.svg.axis().scale(scaleY).orient("left").ticks(10).tickPadding([1]))
 	
@@ -110,13 +125,13 @@ var drawBarChart = function(w,h) {
 					})
 					.style({
 						"stroke": "none",
-						"fill": "#308CB4",
+						"fill": "#333333",
 						"font-size": ".5em"
 					})
 					.text("Total entries of humanitarian population by top source countries");
 						
 				d3.selectAll(".tick").style({
-					"fill": "#308CB4",
+					"fill": "#333333",
 					"stroke": "none",
 					"font-size": ".5em"
 				});
@@ -168,8 +183,6 @@ var drawBarChart = function(w,h) {
 
 drawBarChart(w,h);
 
-
-
 /*
  *  Resize the barchart on viewport size change
  */
@@ -186,7 +199,3 @@ var resize = function() {
 };
 
 d3.select(window).on('resize', resize); 
-
-
-
-

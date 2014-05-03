@@ -5,4 +5,6 @@ This visualisation looks at the number humanitarian migrants who come to Canada 
 - Label X access
 - Create tooltips for the bars, hiding the text indicating the population number (until shown on hover)
 - Make it so bars transition between years
+- Make bars sortable
 
+- Choosing HTML tooltips because some values are zero. 
