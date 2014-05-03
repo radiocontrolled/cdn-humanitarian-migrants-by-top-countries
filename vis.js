@@ -1,13 +1,19 @@
 var w = window.innerWidth/1.1;
-var h = window.innerHeight/1.1;
-var barHeight = 0; // set a minimum barHeight 
-var scale, barWidth, year, bars, svg;
+var h = window.innerHeight/1.5;
+var barWidth, year, bars, svg, scaleX, scaleY;
+
+var opts = {
+	"stroke": "none",
+	"fill": "#333333",
+	"font-size": ".5em",
+	"font-weight": "bold"
+};
 
 d3.select("section").append("svg");
 
 var drawBarChart = function(w,h) {
 
-	d3.json("source.json",function(error, json) {
+	d3.json("source.json", function(error, json) {
 		if(json){
 					
 			var drawRects = function(year){
@@ -32,7 +38,9 @@ var drawBarChart = function(w,h) {
 					.domain([0, d3.max(json[year], function(d) { return d; })])
 					.range([ h,0]);
 					
-			
+				scaleX = d3.scale.ordinal()
+					.domain(json.Source.map(function(d) { return d; }))
+					.rangeRoundBands([0, w]);
 				
 				bars  = svg.selectAll("g")
 					.data(json[year], function(d){return d;});
@@ -59,15 +67,13 @@ var drawBarChart = function(w,h) {
 					})
 					.style({
 						"fill":"#75DCCD",
-						"stroke-width": .5, 
+						"stroke-width": 0.5, 
 						"stroke": "#fff"	
 					});
-				
-				bars.transition()
-					.attr({
-						"height":"100"
-					})
-					.duration(4000);
+					
+				bars
+					.exit().remove();
+			
 					
 				// Nest text within each g
 				bars.append("text")
@@ -79,19 +85,14 @@ var drawBarChart = function(w,h) {
 						"y": function(d){
 							return scaleY(d) - 1;
 						},
-						"x": function(d,i){
+						"x": function(){
 							return barWidth * 0.5;
 						},
 						"text-anchor": "middle",
 						"alignment-baseline": "middle"
 					})
-					.style({
-						"fill": "#333333",
-						"stroke": "none",
-						"font-size": "0.5em",
-						"font-weight": "bold",
-						"display":"none"
-					});
+					.style(opts)
+					.style("display","none");
 				
 				
 				// On hover, change rect colour and display tooltip
@@ -126,20 +127,27 @@ var drawBarChart = function(w,h) {
 						"dy": "-5em",
 						"text-anchor":"start",
 					})
-					.style({
-						"stroke": "none",
-						"fill": "#333333",
-						"font-size": ".5em",
-						"font-weight": "bold"
-					})
+					.style(opts)
 					.text("Total entries of humanitarian population by top source countries");
+					
+				// Create an x asis for the bar chart 
+				
+				var xAxis = d3.svg.axis()
+					.scale(scaleX)
+					.orient("bottom");
+				
+				svg.append("g")
+					.classed("xAxis",true)
+					.style("fill","none")
+					.attr("transform", "translate(0," + h + ")")
+					.call(xAxis);
 						
-				d3.selectAll(".tick").style({
-					"fill": "#333333",
-					"stroke": "none",
-					"font-size": ".5em",
-					"font-weight": "bold"
-				});
+				d3.selectAll(".xAxis text")
+					.attr("transform","rotate(65) translate(1,5)")
+					.style("text-anchor","start")
+					
+				d3.selectAll(".tick").style(opts);
+
 			};
 			
 			drawRects(2003);
@@ -168,14 +176,13 @@ var drawBarChart = function(w,h) {
 			// getYear gives user control of data displayed
 			var getYear = function (){	
 				var years = document.querySelectorAll("li text");
-				for (i = 0; i < years.length; i++){
+				for (var i = 0; i < years.length; i++){
 					years[i].addEventListener("click", trigger);
 				}
 				function trigger(){
 					year = this.innerHTML;
 					drawRects(year);
 				}
-									
 			}();
 						
 			}
@@ -195,7 +202,7 @@ drawBarChart(w,h);
 var resize = function() {
 	
 	w = window.innerWidth/1.1;
-	h = window.innerHeight/1.1;
+	h = window.innerHeight/1.5;
 	
 	drawBarChart(w,h);
 	
