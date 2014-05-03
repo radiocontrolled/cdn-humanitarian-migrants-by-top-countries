@@ -9,7 +9,9 @@ var opts = {
 	"font-weight": "bold"
 };
 
-d3.select("section").append("svg");
+d3.select("section")
+
+	.append("svg");
 
 var drawBarChart = function(w,h) {
 
@@ -23,21 +25,17 @@ var drawBarChart = function(w,h) {
 				svg = d3.select("svg")
 					.attr({
 						width: w,
-						height: h
+						height: window.innerHeight
 					})
-					.attr("transform", "translate(21,0)"); // make responsive
+					//.attr("transform", "translate(35,0)"); // make responsive
 				
 																	
-				/* Scale which will be used to create 
-				 * bar height, and the vertical axis
-				*  input domain is the min and max of persons for a given year from the JSON
-				*  output range extend is the height of the svg
-				*/
-				
+				// Scale for y axis. Input range is # of persons, output range = height of svg)			
 				scaleY = d3.scale.linear()
 					.domain([0, d3.max(json[year], function(d) { return d; })])
 					.range([ h,0]);
-					
+				
+				// Ordinal scale for x axis
 				scaleX = d3.scale.ordinal()
 					.domain(json.Source.map(function(d) { return d; }))
 					.rangeRoundBands([0, w]);
@@ -51,7 +49,7 @@ var drawBarChart = function(w,h) {
 				
 				// Create the spacing between each g 
 				bars.attr("transform", function(d,i) { 
-						return "translate(" + (i*barWidth) + ",0)";
+						return "translate(" + (i*barWidth) +",0)";
 					});
 
 				// Nest a rect within each g 
@@ -111,8 +109,10 @@ var drawBarChart = function(w,h) {
 				// Create a y axis for the bar chart 
 				d3.select("section svg")
 					.append("g")
+					.classed("yAxis",true)
 					.attr("transform", "translate(-5,0)")
 					.style({
+						"stroke-width": ".1em",
 						"fill":"none",
 						"stroke":"#333333"
 					})
@@ -130,7 +130,7 @@ var drawBarChart = function(w,h) {
 					.style(opts)
 					.text("Total entries of humanitarian population by top source countries");
 					
-				// Create an x asis for the bar chart 
+				// Create an x axis for the bar chart 
 				
 				var xAxis = d3.svg.axis()
 					.scale(scaleX)
@@ -140,11 +140,12 @@ var drawBarChart = function(w,h) {
 					.classed("xAxis",true)
 					.style("fill","none")
 					.attr("transform", "translate(0," + h + ")")
-					.call(xAxis);
-						
+					.call(xAxis)
+					.append("text");
+										
 				d3.selectAll(".xAxis text")
 					.attr("transform","rotate(65) translate(1,5)")
-					.style("text-anchor","start")
+					.style("text-anchor","start");
 					
 				d3.selectAll(".tick").style(opts);
 
@@ -195,10 +196,7 @@ var drawBarChart = function(w,h) {
 
 drawBarChart(w,h);
 
-/*
- *  Resize the barchart on viewport size change
- */
-
+// Resize bar chart on viewport size change 
 var resize = function() {
 	
 	w = window.innerWidth/1.1;

@@ -8,7 +8,7 @@ body {
 svg {
 	display: block;
 	margin: 0 auto;
-	overflow:visible;	
+	overflow:visible; /* Firefox supports overflow:visible on inline svg, Chrome does not */
 }
 
 
@@ -21,6 +21,13 @@ li {
 	list-style-type: none;
 	display: inline;
 	padding-right: .5em;
-	font-size: 50%;
+	font-weight: bold;
+	font-size: 75%;
 }
 
+
+/* webkit */ 
+.tick text{		
+	fill:#333333;
+	font-size: 1em;
+}
