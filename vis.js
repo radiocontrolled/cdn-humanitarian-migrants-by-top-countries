@@ -63,37 +63,42 @@ var drawBarChart = function(w,h) {
 					.append("g")
 					.classed("bar",true);
 				
-				
-				bars.exit();
-				
-				//bars.transition().style("color", "red").duration(2000);
-				
+
 				// Create the spacing between each g 
 				bars.attr("transform", function(d,i) { 
 						return "translate(" + (i*barWidth) +",0)";
 					});
 
 				// Nest a rect within each g 
-				bars.append("rect")						
-					.attr({
-						"height": function(d) { 
-							return h - scaleY(d); 
-						},
-						"width": barWidth,
-						"y":function(d) { 
-							return scaleY(d); 
-						}
-					})
+				bars.append("rect")
 					.style({
 						"fill":"#75DCCD",
 						"stroke-width": 0.5, 
 						"stroke": "#fff"	
-					});
-					
+					})						
+					.attr({
+						"height": function(d) { 
+							return 0; 
+						},
+						"width": barWidth,
+						"y":function(d) { 
+							return h; 
+						}
+					})
+					.transition()
+					.attr({
+						"height": function(d) { 
+							return h - scaleY(d); 
+						},
+						"y":function(d) { 
+							return scaleY(d); 
+						}
+					})
+					.duration(1000);
+
 				bars
 					.exit().remove();
 						
-					
 				// Nest text within each g
 				bars.append("text")
 					.classed("total",true)
@@ -112,7 +117,6 @@ var drawBarChart = function(w,h) {
 					})
 					.style(opts)
 					.style("display","none");
-				
 				
 				// On hover, change rect colour and display tooltip
 				bars.on("mouseover", function(){
@@ -221,3 +225,4 @@ var resize = function() {
 };
 
 d3.select(window).on('resize', resize); 
+
