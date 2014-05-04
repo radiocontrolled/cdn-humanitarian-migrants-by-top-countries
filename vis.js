@@ -38,7 +38,7 @@ var drawBarChart = function(w,h) {
 					.domain(json.Source.map(function(d) { return d; }))
 					.rangeRoundBands([0, w*0.95],0,0);
 				
-				bars  = svg.append("g").classed("chart",true).attr("transform","translate(50,0)")
+				bars  = svg.append("g").classed("chart",true).attr("transform","translate(50,10)")
 					.selectAll("g")
 					.data(json[year], function(d){return d;});
 					
@@ -80,7 +80,7 @@ var drawBarChart = function(w,h) {
 					})
 					.attr({
 						"y": function(d){
-							return scaleY(d) - 1;
+							return scaleY(d) - 5;
 						},
 						"x": function(){
 							return barWidth * 0.5;
@@ -109,7 +109,7 @@ var drawBarChart = function(w,h) {
 				d3.select("section svg")
 					.append("g")
 					.classed("yAxis",true)
-					.attr("transform", "translate(45,0)")
+					.attr("transform", "translate(45,10)")
 					.style({
 						"stroke-width": ".1em",
 						"fill":"none",
@@ -137,7 +137,7 @@ var drawBarChart = function(w,h) {
 				svg.append("g")
 					.classed("xAxis",true)
 					.style("fill","none")
-					.attr("transform", "translate(0," + h + ")")
+					.attr("transform", "translate(0," + (h+10) + ")")
 					.call(xAxis)
 					.append("text");
 					
