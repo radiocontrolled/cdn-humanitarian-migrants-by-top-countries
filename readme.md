@@ -3,7 +3,6 @@ This visualisation looks at the number humanitarian migrants who come to Canada 
 
 # Roadmap 
 - Make nav li responsive
-- Add classes to nav li to indicate year being displayed on chart
 - Add transition()
 - Make bars sortable
 

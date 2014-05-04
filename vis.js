@@ -10,7 +10,7 @@ var opts = {
 };
 
 // will hold the bar chart 
-d3.select("section").append("svg").append("g").classed("chart",true).attr("transform","translate(50,10)");
+d3.select("section").append("svg").append("g").classed("chart",true).attr("transform","translate(45,10)");
 
 // will hold the yAxis
 var yAxis = d3.select("section svg").append("g").classed("yAxis",true);
@@ -131,7 +131,7 @@ var drawBarChart = function(w,h) {
 				
 				// Create a y axis for the bar chart 
 				yAxis
-					.attr("transform", "translate(45,10)")
+					.attr("transform", "translate(40,10)")
 					.style({
 						"stroke-width": ".1em",
 						"fill":"none",
@@ -171,7 +171,7 @@ var drawBarChart = function(w,h) {
 
 			};
 			
-			drawRects(2003);
+			
 			
 			var drawNavigation = function () {
 			
@@ -191,7 +191,7 @@ var drawBarChart = function(w,h) {
 					.append("text")
 					.text(function(d){
 						return d;
-					});	
+					});
 			}();
 			
 			// getYear gives user control of data displayed
@@ -201,9 +201,22 @@ var drawBarChart = function(w,h) {
 					years[i].addEventListener("click", trigger);
 				}
 				function trigger(){
+					var clear = document.querySelectorAll(".active");
+					for (var i = 0; i < clear.length; i++){
+						clear[i].classList.remove("active");
+					}
+					
 					year = this.innerHTML;
 					drawRects(year);
+					this.parentNode.classList.add("active");
 				}
+			}();
+			
+			// initially, the barchart displays 2003 data	
+			var init = function (){
+				drawRects(2003);
+				var initialYearShown = document.querySelectorAll("li");
+				initialYearShown[0].classList.add("active");
 			}();
 						
 			}
