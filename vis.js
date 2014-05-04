@@ -137,6 +137,7 @@ var drawBarChart = function(w,h) {
 						"fill":"none",
 						"stroke":"#333333"
 					})
+					.transition().duration(1000).ease("1000")
 					.call(d3.svg.axis().scale(scaleY).orient("left").ticks(10).tickSize([2]));
 					
 				
