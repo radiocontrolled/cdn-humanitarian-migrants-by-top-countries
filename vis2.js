@@ -9,27 +9,9 @@ var opts = {
 	"font-weight": "bold"
 };
 
-// will hold the bar chart 
-d3.select("section").append("svg").append("g").classed("chart",true).attr("transform","translate(50,10)");
+d3.select("section")
 
-// will hold the yAxis
-var yAxis = d3.select("section svg").append("g").classed("yAxis",true);
-
-// label for yAxis
-yAxis.append("text")
-	.attr({
-		"transform":"rotate(-90)",
-		"x": -h,
-		"y": ".6em",
-		"dy": "-5em",
-		"text-anchor":"start",
-	})
-	.style(opts)
-	.text("Total entries of humanitarian population by top source countries");
-
-// will hold the xAxis
-var xAxis = d3.select("section svg").append("g").classed("xAxis",true);
-				
+	.append("svg");
 
 var drawBarChart = function(w,h) {
 
@@ -56,25 +38,26 @@ var drawBarChart = function(w,h) {
 					.domain(json.Source.map(function(d) { return d; }))
 					.rangeRoundBands([0, w*0.95],0,0);
 				
-				bars = svg.select("g.chart").selectAll("g.bar")
+				bars  = svg.append("g").classed("chart",true).attr("transform","translate(50,10)")
+					.selectAll("g.bar")
 					.data(json[year], function(d){return d;});
-						
-				bars.enter()
+				
+				console.log(bars);
+				
+											
+				var barsEnter = bars.enter()
 					.append("g")
-					.classed("bar",true);
+					.classed("bar",true)
 				
-				
-				bars.exit();
-				
-				//bars.transition().style("color", "red").duration(2000);
+			
 				
 				// Create the spacing between each g 
-				bars.attr("transform", function(d,i) { 
+				barsEnter.attr("transform", function(d,i) { 
 						return "translate(" + (i*barWidth) +",0)";
 					});
 
 				// Nest a rect within each g 
-				bars.append("rect")						
+				barsEnter.append("rect")						
 					.attr({
 						"height": function(d) { 
 							return h - scaleY(d); 
@@ -90,19 +73,16 @@ var drawBarChart = function(w,h) {
 						"stroke": "#fff"	
 					});
 					
-				bars
-					.exit().remove();
-						
 					
 				// Nest text within each g
-				bars.append("text")
+				barsEnter.append("text")
 					.classed("total",true)
 					.text(function(d) {
 						return d;
 					})
 					.attr({
 						"y": function(d){
-							return scaleY(d) - 5;
+							return scaleY(d) - 4;
 						},
 						"x": function(){
 							return barWidth * 0.5;
@@ -115,40 +95,58 @@ var drawBarChart = function(w,h) {
 				
 				
 				// On hover, change rect colour and display tooltip
-				bars.on("mouseover", function(){
+				barsEnter.on("mouseover", function(){
+						
 					d3.select(this.firstChild).style("fill","#4DC2CA");
 					d3.select(this.lastChild).style("display","inline");
+					
 				});
 				
-				bars.on("mouseout", function(){
+				barsEnter.on("mouseout", function(){
 					d3.select(this.firstChild).style("fill","#75DCCD");
 					d3.select(this.lastChild).style("display","none");
 				});
+			
+				
 				
 				// Create a y axis for the bar chart 
-				yAxis
+				d3.select("section svg")
+					.append("g")
+					.classed("yAxis",true)
 					.attr("transform", "translate(45,10)")
 					.style({
 						"stroke-width": ".1em",
 						"fill":"none",
 						"stroke":"#333333"
 					})
-					.call(d3.svg.axis().scale(scaleY).orient("left").ticks(10).tickSize([2]));
+					.call(d3.svg.axis().scale(scaleY).orient("left").ticks(10).tickSize([2]))
+	
+					// Give the y axis a title
+					.append("text")
+					.attr({
+						"transform":"rotate(-90)",
+						"x": -h,
+						"y": ".6em",
+						"dy": "-5em",
+						"text-anchor":"start",
+					})
+					.style(opts)
+					.text("Total entries of humanitarian population by top source countries");
 					
-				
 				// Create an x axis for the bar chart 
-				var xAxisScale = d3.svg.axis()
+				var xAxis = d3.svg.axis()
 					.scale(scaleX)
 					.orient("bottom");
 				
-				xAxis
+				svg.append("g")
+					.classed("xAxis",true)
 					.style("fill","none")
 					.attr("transform", "translate(0," + (h+10) + ")")
-					.call(xAxisScale)
+					.call(xAxis)
 					.append("text");
 					
 				// Depending on viewport size, rotate x asis labels for usability
-				var positionLabels = function () {
+				positionLabels = function () {
 					if (document.body.clientWidth < 600) {
 						xAxisLabelTransform = "rotate(90) translate(5,-50)";
 					}
@@ -216,8 +214,6 @@ var resize = function() {
 	
 	w = window.innerWidth/1.1;
 	drawBarChart(w,h);
-	d3.select("yAxis").remove();
-	
 };
 
 d3.select(window).on('resize', resize); 
