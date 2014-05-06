@@ -112,7 +112,7 @@ var drawBarChart = function(w,h) {
 					})
 					.attr({
 						"y": function(d){
-							return scaleY(d) - 5;
+							return scaleY(d) - 4;
 						},
 						"x": function(){
 							return barWidth * 0.5;
@@ -161,9 +161,10 @@ var drawBarChart = function(w,h) {
 				var positionLabels = function () {
 					if (document.body.clientWidth < 600) {
 						xAxisLabelTransform = "rotate(89.5) translate(5,-40)";
+						d3.selectAll("rect").style("pointer-events", "none");
 					}
 					else {
-						xAxisLabelTransform = "rotate(70) translate(15,-40)";
+						xAxisLabelTransform = "rotate(70) translate(10,-31)";
 					}	
 						return xAxisLabelTransform;
 					}();
