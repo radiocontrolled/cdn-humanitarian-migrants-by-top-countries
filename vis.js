@@ -6,11 +6,12 @@ var opts = {
 	"stroke": "none",
 	"fill": "#333333",
 	"font-size": ".5em",
-	"font-weight": "bold"
+	"font-weight": "bold",
+	"z-index": 9000
 };
 
 // will hold the bar chart 
-d3.select("section").append("svg").append("g").classed("chart",true).attr("transform","translate(45,10)");
+d3.select("section").append("svg").append("g").classed("chart",true).attr("transform","translate(37,10)");
 
 // will hold the yAxis
 var yAxis = d3.select("section svg").append("g").classed("yAxis",true);
@@ -20,12 +21,12 @@ yAxis.append("text")
 	.attr({
 		"transform":"rotate(-90)",
 		"x": -h,
-		"y": ".6em",
-		"dy": "-5em",
+		"y": ".95em",
+		"dy": "-4.5em",
 		"text-anchor":"start",
 	})
 	.style(opts)
-	.text("Total entries of humanitarian population by top source countries");
+	.text("Total humanitarian pop from top source countries");
 
 // will hold the xAxis
 var xAxis = d3.select("section svg").append("g").classed("xAxis",true);
@@ -37,6 +38,7 @@ var drawBarChart = function(w,h) {
 		if(json){
 					
 			var drawRects = function(year){
+				
 				
 				barWidth = (w/json[year].length -1)*0.95;
 
@@ -57,7 +59,8 @@ var drawBarChart = function(w,h) {
 					.rangeRoundBands([0, w*0.95],0,0);
 				
 				bars = svg.select("g.chart").selectAll("g.bar")
-					.data(json[year], function(d){return d;});
+					.data(json[year], function(d, i){ return [year, d, i]; });
+					// https://stackoverflow.com/questions/23464115/why-is-data-not-updating-correctly-on-this-d3-js-barchart/23470413?noredirect=1#23470413
 						
 				bars.enter()
 					.append("g")
@@ -94,10 +97,12 @@ var drawBarChart = function(w,h) {
 							return scaleY(d); 
 						}
 					})
-					.duration(1000);
+					.duration(500);
 
 				bars
 					.exit().remove();
+				
+				
 						
 				// Nest text within each g
 				bars.append("text")
@@ -131,7 +136,7 @@ var drawBarChart = function(w,h) {
 				
 				// Create a y axis for the bar chart 
 				yAxis
-					.attr("transform", "translate(40,10)")
+					.attr("transform", "translate(35,10)")
 					.style({
 						"stroke-width": ".1em",
 						"fill":"none",
@@ -155,7 +160,7 @@ var drawBarChart = function(w,h) {
 				// Depending on viewport size, rotate x asis labels for usability
 				var positionLabels = function () {
 					if (document.body.clientWidth < 600) {
-						xAxisLabelTransform = "rotate(90) translate(5,-50)";
+						xAxisLabelTransform = "rotate(89.5) translate(5,-40)";
 					}
 					else {
 						xAxisLabelTransform = "rotate(70) translate(15,-40)";
@@ -207,6 +212,7 @@ var drawBarChart = function(w,h) {
 					}
 					
 					year = this.innerHTML;
+					d3.selectAll("rect").remove();
 					drawRects(year);
 					this.parentNode.classList.add("active");
 				}
@@ -233,9 +239,10 @@ drawBarChart(w,h);
 var resize = function() {
 	
 	w = window.innerWidth/1.1;
-	drawBarChart(w,h);
+	d3.selectAll("rect").remove();
 	d3.select("yAxis").remove();
 	
+	drawBarChart(w,h);
 };
 
 d3.select(window).on('resize', resize); 
