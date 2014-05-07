@@ -7,7 +7,8 @@ body {
 }
 
 nav {
-	margin:  0 0 1em 0;
+	margin:  0;
+
 }
 
 svg {
@@ -44,6 +45,7 @@ li.active {
 
 @media (max-width: 768px) {
 	li {
-		font-size: 40%;
+		font-size: 60%;
 	}
+	
 }
