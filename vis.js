@@ -44,6 +44,7 @@ var drawBarChart = function(w,h,year) {
 				
 				
 				barWidth = (w/json[year].length -1)*0.95;
+				var entireWidth = barWidth*json[year].length;
 
 				svg = d3.select("svg")
 					.attr({
@@ -59,7 +60,7 @@ var drawBarChart = function(w,h,year) {
 				// Ordinal scale for x axis
 				scaleX = d3.scale.ordinal()
 					.domain(json.Source.map(function(d) { return d; }))
-					.rangeRoundBands([0, w*0.95],0,0);
+					.rangeBands([0,entireWidth]);
 				
 				bars = svg.select("g.chart").selectAll("g.bar")
 					.data(json[year], function(d, i){ return [year, d, i]; });
@@ -163,11 +164,11 @@ var drawBarChart = function(w,h,year) {
 				// Depending on viewport size, rotate x asis labels for usability
 				var positionLabels = function () {
 					if (document.body.clientWidth < 600) {
-						xAxisLabelTransform = "rotate(89.5) translate(5,-40)";
+						xAxisLabelTransform = "rotate(90) translate(5,-47)";
 						d3.selectAll("rect").style("pointer-events", "none");
 					}
 					else {
-						xAxisLabelTransform = "rotate(70) translate(10,-31)";
+						xAxisLabelTransform = "rotate(60) translate(20,-41)";
 					}	
 						return xAxisLabelTransform;
 					}();
