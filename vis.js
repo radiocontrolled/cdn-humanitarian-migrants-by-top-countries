@@ -1,6 +1,7 @@
 var w = window.innerWidth/1.1;
 var h = window.innerHeight/1.5;
-var barWidth, year, bars, svg, scaleX, scaleY, xAxisLabelTransform;
+var barWidth, year, bars, svg, scaleX, scaleY, xAxisLabelTransform, init;
+var year = 2012; // used in init
 
 var opts = {
 	"stroke": "none",
@@ -32,12 +33,12 @@ yAxis.append("text")
 var xAxis = d3.select("section svg").append("g").classed("xAxis",true);
 				
 
-var drawBarChart = function(w,h) {
+var drawBarChart = function(w,h,year) {
 
 	d3.json("source.json", function(error, json) {
 		if(json){
 					
-			var drawRects = function(year){
+			drawRects = function(init){
 				
 				
 				barWidth = (w/json[year].length -1)*0.95;
@@ -206,6 +207,7 @@ var drawBarChart = function(w,h) {
 				for (var i = 0; i < years.length; i++){
 					years[i].addEventListener("click", trigger);
 				}
+				
 				function trigger(){
 					var clear = document.querySelectorAll(".active");
 					for (var i = 0; i < clear.length; i++){
@@ -219,12 +221,8 @@ var drawBarChart = function(w,h) {
 				}
 			}();
 			
-			// initially, the barchart displays 2003 data	
-			var init = function (){
-				drawRects(2003);
-				var initialYearShown = document.querySelectorAll("li");
-				initialYearShown[0].classList.add("active");
-			}();
+			// initially, the barchart displays 2012 data	
+			drawRects(year);
 						
 			}
 		
@@ -234,16 +232,18 @@ var drawBarChart = function(w,h) {
 	});
 };
 
-drawBarChart(w,h);
+drawBarChart(w,h,year);
 
 // Resize bar chart on viewport size change 
 var resize = function() {
 	
 	w = window.innerWidth/1.1;
+	
 	d3.selectAll("rect").remove();
 	d3.select("yAxis").remove();
-	
-	drawBarChart(w,h);
+	var year = document.querySelectorAll(".active");
+	year = year[0].firstChild.innerHTML;
+	drawBarChart(w,h,year);
 };
 
 d3.select(window).on('resize', resize); 
