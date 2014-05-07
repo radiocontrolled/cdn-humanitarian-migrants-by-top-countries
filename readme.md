@@ -1,5 +1,5 @@
 # About 
-This visualisation looks humanitarian migrants who come to Canada by top source countries. According to Statistics Canada "source country" refers to a person's place of last residence. 
+This visualisation looks a humanitarian migrants who come to Canada by top source countries. According to Statistics Canada "source country" refers to a person's place of last residence. 
 
 This work is based on the report <a href="http://www.cic.gc.ca/english/resources/statistics/facts2012/temporary/19.asp">Canada – Total entries of humanitarian population by top source countries</a>. 
 This draft chart is in its **first version** and is <a href="http://bl.ocks.org/radiocontrolled/7722907">second in a series</a> on visualising migration. 

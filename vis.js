@@ -81,7 +81,7 @@ var drawBarChart = function(w,h,year) {
 					.style({
 						"fill":"#e74c3c",
 						"stroke-width": 0.5, 
-						"stroke": "#fff"	
+						"stroke": "#efefef"	
 					})						
 					.attr({
 						"height": function(d) { 
