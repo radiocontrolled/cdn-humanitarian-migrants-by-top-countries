@@ -1,7 +1,8 @@
 var w = window.innerWidth/1.1;
 var h = window.innerHeight/1.5;
-var barWidth, year, bars, svg, scaleX, scaleY, xAxisLabelTransform;
+var barWidth, year, bars, svg, scaleX, scaleY, xAxisLabelTransform, drawRects;
 var year = 2012; 
+var init = true;
 
 
 var opts = {
@@ -191,7 +192,7 @@ var drawBarChart = function(w,h,year) {
 					}
 				}
 
-				var ul = d3.select(".navigation")
+				d3.select(".navigation")
 					.selectAll("li")
 					.data(navigationYears)
 					.enter()
@@ -204,14 +205,20 @@ var drawBarChart = function(w,h,year) {
 			
 			
 			// getYear gives user control of data displayed
-			var getYear = function (){	
+			var getYear = function (){
+					
+				if(init){
+				
 				var years = document.querySelectorAll("li text");
+				
 				for (var i = 0; i < years.length; i++){
 					years[i].addEventListener("click", trigger);
 					// initial nav item presented
-					if(i == years.length-1){
-						years[i].parentNode.classList.add("active");
-					}
+						if(i == years.length-1){
+							years[i].parentNode.classList.add("active");
+							init = false;
+						}
+					}		
 				}
 				
 				function trigger(){
@@ -227,11 +234,9 @@ var drawBarChart = function(w,h,year) {
 				}
 			}();
 			
-			// yearially, display 2012	
+			// initially, display 2012	
 			drawRects(year);
-			
-		
-			
+
 			}
 		
 		else{
@@ -250,7 +255,7 @@ var resize = function() {
 	d3.selectAll("rect").remove();
 	d3.select("yAxis").remove();
 	
-	//get the year being viewed
+	//get and redraw the year being viewed on resize
 	var year = document.querySelectorAll(".active");	
 	year = year[0].firstChild.innerHTML;
 	
@@ -259,13 +264,3 @@ var resize = function() {
 };
 
 d3.select(window).on('resize', resize); 
-
-/*
-(function(){
-	var years = document.querySelectorAll("li text");
-		for (var i = 0; i < years.length; i++){		
-			if(i == years.length-1){
-				years[i].parentNode.classList.add("active");
-			}
-		}
-}()); */
