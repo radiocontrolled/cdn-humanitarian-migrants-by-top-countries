@@ -33,7 +33,7 @@ li {
 }
 
 li.active {
-	border: 1px solid #1d91c0;
+	border: 2px solid #c0392b;
 	border-radius: 2px;
 	background: #efefef;
 	padding: .5em;

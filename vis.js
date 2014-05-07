@@ -79,7 +79,7 @@ var drawBarChart = function(w,h,year) {
 				// Nest a rect within each g 
 				bars.append("rect")
 					.style({
-						"fill":"#1d91c0",
+						"fill":"#e74c3c",
 						"stroke-width": 0.5, 
 						"stroke": "#fff"	
 					})						
@@ -129,12 +129,12 @@ var drawBarChart = function(w,h,year) {
 				
 				// On hover, change rect colour and display tooltip
 				bars.on("mouseover", function(){
-					d3.select(this.firstChild).style("fill","#41b6c4");
+					d3.select(this.firstChild).style("fill","#333333");
 					d3.select(this.lastChild).style("display","inline");
 				});
 				
 				bars.on("mouseout", function(){
-					d3.select(this.firstChild).style("fill","#1d91c0");
+					d3.select(this.firstChild).style("fill","#e74c3c");
 					d3.select(this.lastChild).style("display","none");
 				});
 				
