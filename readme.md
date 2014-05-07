@@ -3,7 +3,6 @@ This visualisation looks at the number humanitarian migrants who come to Canada 
 
 # Roadmap 
 - fix how g.chart nudges to the right on second update
-- Add transition()
 - Make bars sortable
 
 # Testing
