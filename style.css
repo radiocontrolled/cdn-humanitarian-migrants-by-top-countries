@@ -33,7 +33,7 @@ li {
 }
 
 li.active {
-	border: 1px solid #4DC2CA;
+	border: 1px solid #1d91c0;
 	border-radius: 2px;
 	background: #efefef;
 	padding: .5em;
@@ -46,6 +46,7 @@ li.active {
 @media (max-width: 768px) {
 	li {
 		font-size: 60%;
+		font-weight: bold;
 	}
 	
 }
